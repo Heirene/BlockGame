@@ -24,7 +24,7 @@
                 var o = {
                     image: image,
                     x:100,
-                    y:100,
+                    y:250,
                     speed:15
                 }
                 o.moveLeft = function() {
@@ -32,6 +32,15 @@
                 }
                 o.moveRight = function() {
                     o.x += o.speed
+                }
+                o.collide = function(ball) {
+                    if (ball.y + ball.image.height > o.y) {
+                        if (ball.x > o.x && ball.x < o.x + o.image.width) {
+                            log('相撞')
+                            return true
+                        }
+                    }
+                    return false
                 }
 
                 return o
@@ -78,7 +87,7 @@
                 g.canvas = canvas
                 g.context = context
                 g.drawImage = function(img){
-                    log('img test:',img)
+                    //log('img test:',img)
                     g.context.drawImage(img.image, img.x, img.y)
                 }
                 window.addEventListener('keydown', function(event){
@@ -115,6 +124,8 @@
             var __main = function(){
                 var game = gameHandle()
                 var paddle = Paddle()
+                var ball = Ball()
+
 
 
                 game.registerAction('a', function(){
@@ -128,12 +139,17 @@
                 })
 
                 game.update = function() {
-                    //to do
+                    ball.move()
+                    // 判断相撞
+                    if (paddle.collide(ball)) {
+                        // 这里应该调用一个 ball.反弹() 来实现
+                        ball.speedY *= -1
+                    }
                 }
                 game.draw = function() {
                     // draw
                     game.drawImage(paddle)
-                    //game.drawImage(ball) to do
+                    game.drawImage(ball)
                 }
             }
             __main()
